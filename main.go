@@ -13,9 +13,6 @@ func main() {
 			Version: "0.0.10",
 			Rules: []tflint.Rule{
 				rules.NewAwsInstanceExampleTypeRule(),
-				rules.NewAwsS3BucketExampleLifecycleRuleRule(),
-				rules.NewLocalFileExampleProvisionerRule(),
-				rules.NewTerraformBackendTypeRule(),
 			},
 		},
 	})
