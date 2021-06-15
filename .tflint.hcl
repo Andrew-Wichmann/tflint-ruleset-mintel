@@ -1,0 +1,3 @@
+plugin "mintel" {
+    enabled = true
+}
