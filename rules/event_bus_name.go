@@ -1,7 +1,9 @@
 package rules
 
 import (
-	hcl "github.com/hashicorp/hcl/v2"
+	"strings"
+
+	"github.com/terraform-linters/tflint-plugin-sdk/terraform/configs"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
 )
 
@@ -35,11 +37,11 @@ func (r *AwsInstanceExampleTypeRule) Link() string {
 
 // Check checks whether ...
 func (r *AwsInstanceExampleTypeRule) Check(runner tflint.Runner) error {
-	return runner.WalkResourceAttributes("awichmann", "instance_type", func(attribute *hcl.Attribute) error {
-		return runner.EmitIssueOnExpr(
-			r,
-			"Just because",
-			attribute.Expr,
-		)
-	});
+	return runner.WalkModuleCalls(func(call *configs.ModuleCall) error {
+		if strings.HasPrefix(call.SourceAddr, "/mintel/satoshi/infrastructure/aws-infrastructure-modules//modules/services/event-bus-topic") {
+			return runner.EmitIssue(r, "We're ballin'", call.SourceAddrRange)
+		}
+
+		return nil
+	})
 }
