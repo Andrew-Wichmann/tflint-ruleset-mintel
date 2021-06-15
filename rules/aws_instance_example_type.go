@@ -1,8 +1,6 @@
 package rules
 
 import (
-	"fmt"
-
 	hcl "github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
 )
@@ -17,7 +15,7 @@ func NewAwsInstanceExampleTypeRule() *AwsInstanceExampleTypeRule {
 
 // Name returns the rule name
 func (r *AwsInstanceExampleTypeRule) Name() string {
-	return "aws_instance_example_type"
+	return "awichmann_example"
 }
 
 // Enabled returns whether the rule is enabled by default
@@ -38,15 +36,10 @@ func (r *AwsInstanceExampleTypeRule) Link() string {
 // Check checks whether ...
 func (r *AwsInstanceExampleTypeRule) Check(runner tflint.Runner) error {
 	return runner.WalkResourceAttributes("aws_instance", "instance_type", func(attribute *hcl.Attribute) error {
-		var instanceType string
-		err := runner.EvaluateExpr(attribute.Expr, &instanceType, nil)
-
-		return runner.EnsureNoError(err, func() error {
-			return runner.EmitIssueOnExpr(
-				r,
-				fmt.Sprintf("instance type is %s. Check yourself!", instanceType),
-				attribute.Expr,
-			)
-		})
-	})
+		return runner.EmitIssueOnExpr(
+			r,
+			"Just because",
+			attribute.Expr,
+		)
+	});
 }
