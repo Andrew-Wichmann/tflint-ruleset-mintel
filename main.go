@@ -10,7 +10,7 @@ func main() {
 	plugin.Serve(&plugin.ServeOpts{
 		RuleSet: &tflint.BuiltinRuleSet{
 			Name:    "mintel",
-			Version: "0.0.10",
+			Version: "0.0.12",
 			Rules: []tflint.Rule{
 				rules.NewAwsInstanceExampleTypeRule(),
 			},
