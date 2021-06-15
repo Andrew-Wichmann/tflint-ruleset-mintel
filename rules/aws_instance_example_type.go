@@ -35,7 +35,7 @@ func (r *AwsInstanceExampleTypeRule) Link() string {
 
 // Check checks whether ...
 func (r *AwsInstanceExampleTypeRule) Check(runner tflint.Runner) error {
-	return runner.WalkResourceAttributes("aws_instance", "instance_type", func(attribute *hcl.Attribute) error {
+	return runner.WalkResourceAttributes("awichmann", "instance_type", func(attribute *hcl.Attribute) error {
 		return runner.EmitIssueOnExpr(
 			r,
 			"Just because",
