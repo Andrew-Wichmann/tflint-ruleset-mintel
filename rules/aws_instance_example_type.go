@@ -44,7 +44,7 @@ func (r *AwsInstanceExampleTypeRule) Check(runner tflint.Runner) error {
 		return runner.EnsureNoError(err, func() error {
 			return runner.EmitIssueOnExpr(
 				r,
-				fmt.Sprintf("instance type is %s", instanceType),
+				fmt.Sprintf("instance type is %s. Check yourself!", instanceType),
 				attribute.Expr,
 			)
 		})
