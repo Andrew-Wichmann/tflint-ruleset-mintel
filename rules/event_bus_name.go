@@ -1,8 +1,6 @@
 package rules
 
 import (
-	"strings"
-
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/configs"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
 )
@@ -35,13 +33,12 @@ func (r *AwsInstanceExampleTypeRule) Link() string {
 	return ""
 }
 
-// Check checks whether ...
+// Checks whether the event bus topic name matches a topic in the event bus
 func (r *AwsInstanceExampleTypeRule) Check(runner tflint.Runner) error {
-	return runner.WalkModuleCalls(func(call *configs.ModuleCall) error {
-		if strings.HasPrefix(call.SourceAddr, "/mintel/satoshi/infrastructure/aws-infrastructure-modules//modules/services/event-bus-topic") {
-			return runner.EmitIssue(r, "We're ballin'", call.SourceAddrRange)
+	return runner.WalkResources("aws_sns_topic", func(resource *configs.Resource) error {
+		if resource.Name == "foobarbaz" {
+			return runner.EmitIssue(r, "Balling", resource.ProviderConfigRef.NameRange)
 		}
-
 		return nil
 	})
 }
