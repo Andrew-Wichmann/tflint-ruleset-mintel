@@ -1,6 +1,7 @@
 package rules
 
 import (
+	"github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/configs"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
 )
@@ -36,9 +37,16 @@ func (r *AwsInstanceExampleTypeRule) Link() string {
 // Checks whether the event bus topic name matches a topic in the event bus.
 func (r *AwsInstanceExampleTypeRule) Check(runner tflint.Runner) error {
 	return runner.WalkResources("aws_sns_topic", func(resource *configs.Resource) error {
-		if resource.Name == "foobarbaz" {
-			return runner.EmitIssue(r, "Balling", resource.ProviderConfigRef.NameRange)
+		var body hcl.Attributes
+		var topic_name string;
+
+		body, _ = resource.Config.JustAttributes()
+		runner.EvaluateExpr(body["name"].Expr, &topic_name, nil)
+
+		if topic_name == "foobarbaz" {
+			return runner.EmitIssue(r, "Balling", body["name"].NameRange)
 		}
+
 		return nil
 	})
 }

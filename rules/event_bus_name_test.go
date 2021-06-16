@@ -16,20 +16,34 @@ func Test_AwsInstanceExampleType(t *testing.T) {
 		{
 			Name: "issue found",
 			Content: `
-resource "aws_instance" "web" {
-    instance_type = "t2.micro"
+resource "aws_sns_topic" "topic1" {
+    name = "foobarbaz"
+	tags = {
+		EventBus: True
+	}
 }`,
 			Expected: helper.Issues{
 				{
 					Rule:    NewAwsInstanceExampleTypeRule(),
-					Message: "instance type is t2.micro",
+					Message: "Balling",
 					Range: hcl.Range{
 						Filename: "resource.tf",
-						Start:    hcl.Pos{Line: 3, Column: 21},
-						End:      hcl.Pos{Line: 3, Column: 31},
+						Start:    hcl.Pos{Line: 3, Column: 5},
+						End:      hcl.Pos{Line: 3, Column: 9},
 					},
 				},
 			},
+		},
+		{
+			Name: "issue found",
+			Content: `
+resource "aws_sns_topic" "topic1" {
+    name = "foobarbaz2"
+	tags = {
+		EventBus: True
+	}
+}`,
+			Expected: helper.Issues{},
 		},
 	}
 
