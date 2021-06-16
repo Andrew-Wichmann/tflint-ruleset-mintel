@@ -42,6 +42,7 @@ func (r *AwsInstanceExampleTypeRule) Check(runner tflint.Runner) error {
 
 		body, _ = resource.Config.JustAttributes()
 		runner.EvaluateExpr(body["name"].Expr, &topic_name, nil)
+		print(topic_name)
 
 		if topic_name == "foobarbaz" {
 			return runner.EmitIssue(r, "Balling", body["name"].NameRange)
