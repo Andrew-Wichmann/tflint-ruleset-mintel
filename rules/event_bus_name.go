@@ -41,15 +41,38 @@ func (r *AwsInstanceExampleTypeRule) Link() string {
 func (r *AwsInstanceExampleTypeRule) Check(runner tflint.Runner) error {
 	return runner.WalkResources("aws_sns_topic", func(resource *configs.Resource) error {
 		var body hcl.Attributes
-		var resource_topic_name string;
+		var resource_topic_name string
+		resource_tags := make(map[string]string)
 
 		body, _ = resource.Config.JustAttributes()
-		runner.EvaluateExpr(body["name"].Expr, &resource_topic_name, nil)
-		for _, topic_name := range topics.TOPICS {
-			if resource_topic_name == topic_name {
-				return nil
-			}
+
+		tags, ok := body["tags"]
+		if !ok {
+			return nil
 		}
-		return runner.EmitIssue(r, fmt.Sprintf("Event bus topic name invalid: %s", resource_topic_name), body["name"].NameRange)
+		err := runner.EvaluateExpr(tags.Expr, &resource_tags, nil)
+		err = runner.EnsureNoError(err, func() error {
+			return nil
+		})
+		if err != nil {
+			return err
+		}
+		if val, ok := resource_tags["EventBus"]; ok && val == "true" {
+			err := runner.EvaluateExpr(body["name"].Expr, &resource_topic_name, nil)
+			err = runner.EnsureNoError(err, func() error {
+				return nil
+			})
+			if err != nil {
+				return err
+			}
+
+			for _, topic_name := range topics.TOPICS {
+				if resource_topic_name == topic_name {
+					return nil
+				}
+			}
+			return runner.EmitIssue(r, fmt.Sprintf("Event bus topic name invalid: %s", resource_topic_name), body["name"].NameRange)
+		}
+		return nil
 	})
 }
