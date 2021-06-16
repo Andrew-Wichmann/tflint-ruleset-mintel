@@ -33,7 +33,7 @@ func (r *AwsInstanceExampleTypeRule) Link() string {
 	return ""
 }
 
-// Checks whether the event bus topic name matches a topic in the event bus
+// Checks whether the event bus topic name matches a topic in the event bus.
 func (r *AwsInstanceExampleTypeRule) Check(runner tflint.Runner) error {
 	return runner.WalkResources("aws_sns_topic", func(resource *configs.Resource) error {
 		if resource.Name == "foobarbaz" {
