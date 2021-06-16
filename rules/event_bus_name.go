@@ -1,9 +1,12 @@
 package rules
 
 import (
+	"fmt"
+
 	"github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/configs"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	"gitlab.com/mintel/everest/event-bus/events/mintel-events-go/topics"
 )
 
 // AwsInstanceExampleTypeRule checks whether ...
@@ -38,16 +41,15 @@ func (r *AwsInstanceExampleTypeRule) Link() string {
 func (r *AwsInstanceExampleTypeRule) Check(runner tflint.Runner) error {
 	return runner.WalkResources("aws_sns_topic", func(resource *configs.Resource) error {
 		var body hcl.Attributes
-		var topic_name string;
+		var resource_topic_name string;
 
 		body, _ = resource.Config.JustAttributes()
-		runner.EvaluateExpr(body["name"].Expr, &topic_name, nil)
-		print(topic_name)
-
-		if topic_name == "foobarbaz" {
-			return runner.EmitIssue(r, "Balling", body["name"].NameRange)
+		runner.EvaluateExpr(body["name"].Expr, &resource_topic_name, nil)
+		for _, topic_name := range topics.TOPICS {
+			if resource_topic_name == topic_name {
+				return nil
+			}
 		}
-
-		return nil
+		return runner.EmitIssue(r, fmt.Sprintf("Event bus topic name invalid: %s", resource_topic_name), body["name"].NameRange)
 	})
 }
