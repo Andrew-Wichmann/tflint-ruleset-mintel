@@ -17,7 +17,7 @@ func Test_AwsInstanceExampleType(t *testing.T) {
 			Name: "issue found",
 			Content: `
 resource "aws_sns_topic" "topic1" {
-    name = "foobarbaz"
+    name = "not-a-event-bus-topic"
 	tags = {
 		EventBus: True
 	}
@@ -25,7 +25,7 @@ resource "aws_sns_topic" "topic1" {
 			Expected: helper.Issues{
 				{
 					Rule:    NewAwsInstanceExampleTypeRule(),
-					Message: "Balling",
+					Message: "Event bus topic name invalid: not-a-event-bus-topic",
 					Range: hcl.Range{
 						Filename: "resource.tf",
 						Start:    hcl.Pos{Line: 3, Column: 5},
@@ -38,7 +38,7 @@ resource "aws_sns_topic" "topic1" {
 			Name: "issue found",
 			Content: `
 resource "aws_sns_topic" "topic1" {
-    name = "foobarbaz2"
+    name = "example"
 	tags = {
 		EventBus: True
 	}
