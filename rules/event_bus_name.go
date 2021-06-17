@@ -1,12 +1,12 @@
 package rules
 
 import (
-	"encoding/gob"
 	"fmt"
 
 	"github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/configs"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
+	"github.com/zclconf/go-cty/cty"
 	"gitlab.com/mintel/everest/event-bus/events/mintel-events-go/topics"
 )
 
@@ -38,28 +38,33 @@ func (r *AwsInstanceExampleTypeRule) Link() string {
 	return ""
 }
 
+type eventBusTag struct {
+	EventBus bool   `cty:"EventBus"`
+}
+
 // Checks whether the event bus topic name matches a topic in the event bus.
 func (r *AwsInstanceExampleTypeRule) Check(runner tflint.Runner) error {
 	return runner.WalkResources("aws_sns_topic", func(resource *configs.Resource) error {
-		gob.Register(map[string]string{})
 		var body hcl.Attributes
 		var resource_topic_name string
-		resource_tags := make(map[string]string)
-
+		wantType := cty.Object(map[string]cty.Type{
+			"EventBus":                 cty.Bool,
+		})
+		var resource_tags eventBusTag
 		body, _ = resource.Config.JustAttributes()
 
 		tags, ok := body["tags"]
 		if !ok {
 			return nil
 		}
-		err := runner.EvaluateExpr(tags.Expr, &resource_tags, nil)
+		err := runner.EvaluateExpr(tags.Expr, &resource_tags, &wantType)
 		err = runner.EnsureNoError(err, func() error {
 			return nil
 		})
 		if err != nil {
 			return err
 		}
-		if val, ok := resource_tags["EventBus"]; ok && val == "true" {
+		if resource_tags.EventBus {
 			err := runner.EvaluateExpr(body["name"].Expr, &resource_topic_name, nil)
 			err = runner.EnsureNoError(err, func() error {
 				return nil
