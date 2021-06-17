@@ -14,7 +14,7 @@ func Test_AwsInstanceExampleType(t *testing.T) {
 		Expected helper.Issues
 	}{
 		{
-			Name: "issue found",
+			Name: "invalid event bus topic",
 			Content: `
 resource "aws_sns_topic" "topic1" {
     name = "not-a-event-bus-topic"
@@ -35,7 +35,7 @@ resource "aws_sns_topic" "topic1" {
 			},
 		},
 		{
-			Name: "issue found",
+			Name: "do not check non event bus topic",
 			Content: `
 resource "aws_sns_topic" "topic1" {
     name = "not-a-event-bus-topic"
@@ -43,7 +43,7 @@ resource "aws_sns_topic" "topic1" {
 			Expected: helper.Issues{},
 		},
 		{
-			Name: "issue not found",
+			Name: "valid event bus topic name",
 			Content: `
 resource "aws_sns_topic" "topic1" {
     name = "example"
