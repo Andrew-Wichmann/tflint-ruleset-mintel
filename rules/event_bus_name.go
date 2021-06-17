@@ -41,7 +41,7 @@ func (r *AwsInstanceExampleTypeRule) Link() string {
 // Checks whether the event bus topic name matches a topic in the event bus.
 func (r *AwsInstanceExampleTypeRule) Check(runner tflint.Runner) error {
 	return runner.WalkResources("aws_sns_topic", func(resource *configs.Resource) error {
-		gob.Register(map[string]interface{}{})
+		gob.Register(map[string]string{})
 		var body hcl.Attributes
 		var resource_topic_name string
 		resource_tags := make(map[string]string)
