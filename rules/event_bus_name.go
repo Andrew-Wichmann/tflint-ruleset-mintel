@@ -6,7 +6,6 @@ import (
 	"github.com/hashicorp/hcl/v2"
 	"github.com/terraform-linters/tflint-plugin-sdk/terraform/configs"
 	"github.com/terraform-linters/tflint-plugin-sdk/tflint"
-	"github.com/zclconf/go-cty/cty"
 	"gitlab.com/mintel/everest/event-bus/events/mintel-events-go/topics"
 )
 
@@ -47,9 +46,9 @@ func (r *EventBusTopicNameRule) Check(runner tflint.Runner) error {
 	return runner.WalkResources("aws_sns_topic", func(resource *configs.Resource) error {
 		var body hcl.Attributes
 		var resource_topic_name string
-		wantType := cty.Object(map[string]cty.Type{
-			"EventBus":                 cty.String,
-		})
+		// wantType := cty.Object(map[string]cty.Type{
+		// 	"EventBus":                 cty.String,
+		// })
 		var resource_tags eventBusTag
 		body, _ = resource.Config.JustAttributes()
 
@@ -57,7 +56,7 @@ func (r *EventBusTopicNameRule) Check(runner tflint.Runner) error {
 		if !ok {
 			return nil
 		}
-		err := runner.EvaluateExpr(tags.Expr, &resource_tags, &wantType)
+		err := runner.EvaluateExpr(tags.Expr, &resource_tags, nil)
 		err = runner.EnsureNoError(err, func() error {
 			return nil
 		})

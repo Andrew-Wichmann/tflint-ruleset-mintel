@@ -10,7 +10,7 @@ func main() {
 	plugin.Serve(&plugin.ServeOpts{
 		RuleSet: &tflint.BuiltinRuleSet{
 			Name:    "mintel",
-			Version: "0.1.4",
+			Version: "0.1.5",
 			Rules: []tflint.Rule{
 				rules.NewEventBusTopicNameRule(),
 			},
