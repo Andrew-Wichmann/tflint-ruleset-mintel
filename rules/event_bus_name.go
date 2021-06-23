@@ -20,7 +20,7 @@ func NewAwsInstanceExampleTypeRule() *AwsInstanceExampleTypeRule {
 
 // Name returns the rule name
 func (r *AwsInstanceExampleTypeRule) Name() string {
-	return "awichmann_example"
+	return "mintel_event_bus_topic_naming"
 }
 
 // Enabled returns whether the rule is enabled by default
@@ -39,7 +39,7 @@ func (r *AwsInstanceExampleTypeRule) Link() string {
 }
 
 type eventBusTag struct {
-	EventBus bool   `cty:"EventBus"`
+	EventBus string   `cty:"EventBus"`
 }
 
 // Checks whether the event bus topic name matches a topic in the event bus.
@@ -48,7 +48,7 @@ func (r *AwsInstanceExampleTypeRule) Check(runner tflint.Runner) error {
 		var body hcl.Attributes
 		var resource_topic_name string
 		wantType := cty.Object(map[string]cty.Type{
-			"EventBus":                 cty.Bool,
+			"EventBus":                 cty.String,
 		})
 		var resource_tags eventBusTag
 		body, _ = resource.Config.JustAttributes()
@@ -64,7 +64,7 @@ func (r *AwsInstanceExampleTypeRule) Check(runner tflint.Runner) error {
 		if err != nil {
 			return err
 		}
-		if resource_tags.EventBus {
+		if resource_tags.EventBus == "true" {
 			err := runner.EvaluateExpr(body["name"].Expr, &resource_topic_name, nil)
 			err = runner.EnsureNoError(err, func() error {
 				return nil
