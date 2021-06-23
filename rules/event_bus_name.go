@@ -38,7 +38,7 @@ func (r *EventBusTopicNameRule) Link() string {
 }
 
 type eventBusTag struct {
-	EventBus string   `cty:"EventBus"`
+	EventBus string   `default:"false"`
 }
 
 // Checks whether the event bus topic name matches a topic in the event bus.
