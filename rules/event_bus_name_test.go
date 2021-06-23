@@ -24,7 +24,7 @@ resource "aws_sns_topic" "topic1" {
 }`,
 			Expected: helper.Issues{
 				{
-					Rule:    NewAwsInstanceExampleTypeRule(),
+					Rule:    NewEventBusTopicNameRule(),
 					Message: "Event bus topic name invalid: not-a-event-bus-topic",
 					Range: hcl.Range{
 						Filename: "resource.tf",
@@ -55,7 +55,7 @@ resource "aws_sns_topic" "topic1" {
 		},
 	}
 
-	rule := NewAwsInstanceExampleTypeRule()
+	rule := NewEventBusTopicNameRule()
 
 	for _, tc := range cases {
 		runner := helper.TestRunner(t, map[string]string{"resource.tf": tc.Content})

@@ -10,31 +10,31 @@ import (
 	"gitlab.com/mintel/everest/event-bus/events/mintel-events-go/topics"
 )
 
-// AwsInstanceExampleTypeRule checks whether ...
-type AwsInstanceExampleTypeRule struct{}
+// EventBusTopicNameRule checks whether ...
+type EventBusTopicNameRule struct{}
 
-// NewAwsInstanceExampleTypeRule returns a new rule
-func NewAwsInstanceExampleTypeRule() *AwsInstanceExampleTypeRule {
-	return &AwsInstanceExampleTypeRule{}
+// NewEventBusTopicNameRule returns a new rule
+func NewEventBusTopicNameRule() *EventBusTopicNameRule {
+	return &EventBusTopicNameRule{}
 }
 
 // Name returns the rule name
-func (r *AwsInstanceExampleTypeRule) Name() string {
-	return "mintel_event_bus_topic_naming"
+func (r *EventBusTopicNameRule) Name() string {
+	return "event_bus_topic_naming"
 }
 
 // Enabled returns whether the rule is enabled by default
-func (r *AwsInstanceExampleTypeRule) Enabled() bool {
+func (r *EventBusTopicNameRule) Enabled() bool {
 	return true
 }
 
 // Severity returns the rule severity
-func (r *AwsInstanceExampleTypeRule) Severity() string {
+func (r *EventBusTopicNameRule) Severity() string {
 	return tflint.ERROR
 }
 
 // Link returns the rule reference link
-func (r *AwsInstanceExampleTypeRule) Link() string {
+func (r *EventBusTopicNameRule) Link() string {
 	return ""
 }
 
@@ -43,7 +43,7 @@ type eventBusTag struct {
 }
 
 // Checks whether the event bus topic name matches a topic in the event bus.
-func (r *AwsInstanceExampleTypeRule) Check(runner tflint.Runner) error {
+func (r *EventBusTopicNameRule) Check(runner tflint.Runner) error {
 	return runner.WalkResources("aws_sns_topic", func(resource *configs.Resource) error {
 		var body hcl.Attributes
 		var resource_topic_name string
